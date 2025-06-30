@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -14,10 +16,56 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type RunContainerRequest struct {
+	Image        string            `json:"image"`
+	Name         string            `json:"name,omitempty"`
+	Ports        map[string]string `json:"ports,omitempty"`
+	Environment  []string          `json:"environment,omitempty"`
+	Volumes      []string          `json:"volumes,omitempty"`
+	Command      []string          `json:"command,omitempty"`
+	WorkingDir   string            `json:"working_dir,omitempty"`
+	RestartPolicy string           `json:"restart_policy,omitempty"`
+}
+
+type PullImageRequest struct {
+	Image string `json:"image"`
+}
+
+type SearchResponse struct {
+	Local     []LocalImageResult `json:"local"`
+	DockerHub []HubImageResult   `json:"dockerhub"`
+}
+
+type LocalImageResult struct {
+	ID       string   `json:"id"`
+	RepoTags []string `json:"repo_tags"`
+	Size     int64    `json:"size"`
+	Created  int64    `json:"created"`
+}
+
+type HubImageResult struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Stars       int    `json:"star_count"`
+	Official    bool   `json:"is_official"`
+	Automated   bool   `json:"is_automated"`
+}
+
 func main() {
+	// Load environment variables from .env file
+	loadEnvFile()
+
 	// Setup logging
-	logrus.SetLevel(logrus.InfoLevel)
+	logLevel := getEnvOrDefault("LOG_LEVEL", "info")
+	if level, err := logrus.ParseLevel(logLevel); err == nil {
+		logrus.SetLevel(level)
+	}
 	logrus.SetFormatter(&logrus.JSONFormatter{})
+
+	// Initialize database
+	if err := initDatabase(); err != nil {
+		logrus.WithError(err).Warn("Failed to initialize database, continuing without persistence")
+	}
 
 	// Initialize authentication
 	initAuth()
@@ -28,9 +76,15 @@ func main() {
 	router := mux.NewRouter()
 	setupRoutes(router)
 
+	// Get port from environment variable or use default
+	port := getEnvOrDefault("PORT", "8081")
+	
+	// Get frontend URL from environment
+	frontendURL := getEnvOrDefault("FRONTEND_URL", "http://localhost:3000")
+	
 	// Setup CORS
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000", "http://127.0.0.1:3000"},
+		AllowedOrigins:   []string{frontendURL, "http://127.0.0.1:3000", "http://localhost:" + port, "http://127.0.0.1:" + port},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
@@ -38,7 +92,7 @@ func main() {
 
 	// Create server
 	srv := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":" + port,
 		Handler:      c.Handler(router),
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
@@ -47,7 +101,7 @@ func main() {
 
 	// Start server in goroutine
 	go func() {
-		logrus.Info("Starting Docker service on port 8080")
+		logrus.WithField("port", port).Info("Starting Docker service")
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logrus.WithError(err).Fatal("Server failed to start")
 		}
@@ -60,6 +114,9 @@ func main() {
 
 	logrus.Info("Shutting down server...")
 
+	// Close database connection
+	closeDatabase()
+
 	// Graceful shutdown with timeout
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -71,6 +128,39 @@ func main() {
 	logrus.Info("Server exited")
 }
 
+// loadEnvFile loads environment variables from .env file
+func loadEnvFile() {
+	file, err := os.Open(".env")
+	if err != nil {
+		logrus.Debug("No .env file found, using system environment variables")
+		return
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) == 2 {
+			key := strings.TrimSpace(parts[0])
+			value := strings.TrimSpace(parts[1])
+			
+			// Only set if not already set in environment
+			if os.Getenv(key) == "" {
+				os.Setenv(key, value)
+			}
+		}
+	}
+	
+	if err := scanner.Err(); err != nil {
+		logrus.WithError(err).Warn("Error reading .env file")
+	}
+}
+
 func setupRoutes(router *mux.Router) {
 	// Public routes (no auth required)
 	router.HandleFunc("/health", healthCheck).Methods("GET")
@@ -79,9 +169,11 @@ func setupRoutes(router *mux.Router) {
 	// Protected routes (auth required)
 	router.HandleFunc("/auth/logout", authMiddleware(logoutHandler)).Methods("POST")
 	router.HandleFunc("/auth/me", authMiddleware(meHandler)).Methods("GET")
+	router.HandleFunc("/auth/change-password", authMiddleware(changePasswordHandler)).Methods("POST")
 
 	// Container routes
 	router.HandleFunc("/containers", authMiddleware(listContainers)).Methods("GET")
+	router.HandleFunc("/containers/run", authMiddleware(runContainer)).Methods("POST")
 	router.HandleFunc("/containers/{id}/start", authMiddleware(startContainer)).Methods("POST")
 	router.HandleFunc("/containers/{id}/stop", authMiddleware(stopContainer)).Methods("POST")
 	router.HandleFunc("/containers/{id}/restart", authMiddleware(restartContainer)).Methods("POST")
@@ -91,7 +183,10 @@ func setupRoutes(router *mux.Router) {
 
 	// Image routes
 	router.HandleFunc("/images", authMiddleware(listImages)).Methods("GET")
+	router.HandleFunc("/images/search", authMiddleware(searchImages)).Methods("GET")
+	router.HandleFunc("/images/pull", authMiddleware(pullImage)).Methods("POST")
 	router.HandleFunc("/images/{id}", authMiddleware(deleteImage)).Methods("DELETE")
+	router.HandleFunc("/images/{id}/inspect", authMiddleware(inspectImage)).Methods("GET")
 
 	// Volume routes
 	router.HandleFunc("/volumes", authMiddleware(listVolumes)).Methods("GET")
@@ -101,8 +196,9 @@ func setupRoutes(router *mux.Router) {
 	router.HandleFunc("/networks", authMiddleware(listNetworks)).Methods("GET")
 	router.HandleFunc("/networks/{id}", authMiddleware(deleteNetwork)).Methods("DELETE")
 
-	// System info
+	// System info and metrics
 	router.HandleFunc("/system/info", authMiddleware(getSystemInfo)).Methods("GET")
+	router.HandleFunc("/system/metrics", authMiddleware(getSystemMetrics)).Methods("GET")
 }
 
 func healthCheck(w http.ResponseWriter, r *http.Request) {
@@ -320,4 +416,103 @@ func getSystemInfo(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(info)
+}
+
+func runContainer(w http.ResponseWriter, r *http.Request) {
+	var req RunContainerRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	containerID, err := dockerRun(req)
+	if err != nil {
+		logrus.WithError(err).WithField("image", req.Image).Error("Failed to run container")
+		http.Error(w, "Failed to run container: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	logrus.WithFields(logrus.Fields{
+		"container": containerID,
+		"image":     req.Image,
+	}).Info("Container created and started")
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"message":     "Container created and started successfully",
+		"containerID": containerID,
+	})
+}
+
+func searchImages(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query().Get("q")
+	if query == "" {
+		http.Error(w, "Query parameter 'q' is required", http.StatusBadRequest)
+		return
+	}
+
+	// First search local images
+	localImages, err := searchLocalImages(query)
+	if err != nil {
+		logrus.WithError(err).Error("Failed to search local images")
+	}
+
+	// Then search Docker Hub
+	hubImages, err := searchDockerHub(query)
+	if err != nil {
+		logrus.WithError(err).Error("Failed to search Docker Hub")
+	}
+
+	response := SearchResponse{
+		Local:     localImages,
+		DockerHub: hubImages,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func pullImage(w http.ResponseWriter, r *http.Request) {
+	var req PullImageRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	if err := dockerPull(req.Image); err != nil {
+		logrus.WithError(err).WithField("image", req.Image).Error("Failed to pull image")
+		http.Error(w, "Failed to pull image: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	logrus.WithField("image", req.Image).Info("Image pulled successfully")
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "Image pulled successfully"})
+}
+
+func inspectImage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	inspection, err := dockerInspectImage(id)
+	if err != nil {
+		logrus.WithError(err).WithField("image", id).Error("Failed to inspect image")
+		http.Error(w, "Failed to inspect image: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(inspection)
+}
+
+func getSystemMetrics(w http.ResponseWriter, r *http.Request) {
+	metrics, err := getRealSystemMetrics()
+	if err != nil {
+		logrus.WithError(err).Error("Failed to get system metrics")
+		http.Error(w, "Failed to get system metrics: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(metrics)
 }

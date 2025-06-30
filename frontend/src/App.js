@@ -11,6 +11,7 @@ import ContainersPage from './pages/ContainersPage';
 import ImagesPage from './pages/ImagesPage';
 import VolumesPage from './pages/VolumesPage';
 import NetworksPage from './pages/NetworksPage';
+import SystemMetricsPage from './pages/SystemMetricsPage';
 import { ThemeProvider } from './hooks/useTheme';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
                   <Route path="/images" element={<ImagesPage />} />
                   <Route path="/volumes" element={<VolumesPage />} />
                   <Route path="/networks" element={<NetworksPage />} />
+                  <Route path="/metrics" element={<SystemMetricsPage />} />
                 </Routes>
               </Layout>
             </ProtectedRoute>

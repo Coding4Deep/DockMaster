@@ -1,31 +1,48 @@
 version: '3.8'
 
 services:
-  # Frontend
+  backend:
+    build:
+      context: ./backend/docker-service
+      dockerfile: Dockerfile
+    container_name: dockmaster-backend
+    ports:
+      - "${BACKEND_PORT:-8081}:8081"
+    environment:
+      - PORT=8081
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      - FRONTEND_URL=http://localhost:${FRONTEND_PORT:-3000}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - DB_PATH=/app/data/dockmaster.db
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/app/data
+    networks:
+      - dockmaster-network
+    restart: unless-stopped
+    user: "0:0"  # Run as root to access docker socket
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_URL=http://localhost:${BACKEND_PORT:-8081}
+    container_name: dockmaster-frontend
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
     environment:
-      - REACT_APP_API_URL=http://localhost:8080
+      - PORT=3000
     depends_on:
-      - docker-service
-    networks:
-      - dockmaster-network
-
-  # Docker Service (Unified Backend)
-  docker-service:
-    build:
-      context: ./backend/docker-service
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      - LOG_LEVEL=info
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      backend:
+        condition: service_healthy
     networks:
       - dockmaster-network
     restart: unless-stopped
@@ -33,3 +50,7 @@ services:
 networks:
   dockmaster-network:
     driver: bridge
+
+volumes:
+  dockmaster-data:
+    driver: local

@@ -1,0 +1,5 @@
+{"level":"info","msg":"Database initialized successfully","time":"2025-06-30T12:19:39Z"}
+{"level":"info","msg":"Docker service starting...","time":"2025-06-30T12:19:39Z"}
+{"level":"info","msg":"Starting Docker service","port":"8081","time":"2025-06-30T12:19:39Z"}
+{"level":"info","msg":"Shutting down server...","time":"2025-06-30T12:22:55Z"}
+{"level":"info","msg":"Server exited","time":"2025-06-30T12:22:55Z"}

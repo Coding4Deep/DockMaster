@@ -7,29 +7,46 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci --only=production
 
 # Copy source code
 COPY . .
 
+# Set build-time environment variables
+ARG REACT_APP_API_URL=http://localhost:8081
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 # Build the application
 RUN npm run build
 
-# Production stage
-FROM nginx:alpine
+# Runtime stage
+FROM node:18-alpine
 
-# Copy built app from builder stage
-COPY --from=builder /app/build /usr/share/nginx/html
+# Install serve and curl for health checks
+RUN npm install -g serve && apk add --no-cache curl
 
-# Copy custom nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+WORKDIR /app
+
+# Copy built application from builder stage
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/package*.json ./
+
+# Create non-root user
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
+
+# Change ownership
+RUN chown -R appuser:appgroup /app
+
+# Switch to non-root user
+USER appuser
 
 # Expose port
 EXPOSE 3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:3000 || exit 1
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start the application
+CMD ["serve", "-s", "build", "-l", "3000"]

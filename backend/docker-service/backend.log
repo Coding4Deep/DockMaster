@@ -1,0 +1,8 @@
+{"level":"info","msg":"Database initialized successfully","time":"2025-06-30T12:18:39Z"}
+{"level":"info","msg":"Docker service starting...","time":"2025-06-30T12:18:39Z"}
+{"level":"info","msg":"Starting Docker service","port":"9090","time":"2025-06-30T12:18:39Z"}
+{"level":"info","msg":"User logged in successfully","time":"2025-06-30T12:19:02Z","username":"admin"}
+{"command":"docker run -d --name test-nginx -p 8080:80 nginx:latest","error":"exit status 125","level":"error","msg":"Docker command failed","time":"2025-06-30T12:19:03Z"}
+{"error":"docker command failed: exit status 125","image":"nginx:latest","level":"error","msg":"Failed to run container","time":"2025-06-30T12:19:03Z"}
+{"level":"info","msg":"Shutting down server...","time":"2025-06-30T12:19:35Z"}
+{"level":"info","msg":"Server exited","time":"2025-06-30T12:19:35Z"}

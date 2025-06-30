@@ -633,3 +633,246 @@ func dockerLogs(containerID string, tail string) ([]map[string]interface{}, erro
 
 	return logs, nil
 }
+
+// dockerRun creates and starts a new container
+func dockerRun(req RunContainerRequest) (string, error) {
+	args := []string{"run", "-d"}
+	
+	// Add name if provided
+	if req.Name != "" {
+		args = append(args, "--name", req.Name)
+	}
+	
+	// Add port mappings
+	for hostPort, containerPort := range req.Ports {
+		args = append(args, "-p", hostPort+":"+containerPort)
+	}
+	
+	// Add environment variables
+	for _, env := range req.Environment {
+		args = append(args, "-e", env)
+	}
+	
+	// Add volumes
+	for _, volume := range req.Volumes {
+		args = append(args, "-v", volume)
+	}
+	
+	// Add working directory
+	if req.WorkingDir != "" {
+		args = append(args, "-w", req.WorkingDir)
+	}
+	
+	// Add restart policy
+	if req.RestartPolicy != "" {
+		args = append(args, "--restart", req.RestartPolicy)
+	}
+	
+	// Add image
+	args = append(args, req.Image)
+	
+	// Add command if provided
+	if len(req.Command) > 0 {
+		args = append(args, req.Command...)
+	}
+	
+	output, err := executeDockerCommand(args...)
+	if err != nil {
+		return "", err
+	}
+	
+	// Return container ID
+	return strings.TrimSpace(string(output)), nil
+}
+
+// searchLocalImages searches for images locally
+func searchLocalImages(query string) ([]LocalImageResult, error) {
+	images, err := getRealImages()
+	if err != nil {
+		return nil, err
+	}
+	
+	var results []LocalImageResult
+	query = strings.ToLower(query)
+	
+	for _, img := range images {
+		if repoTags, ok := img["RepoTags"].([]string); ok {
+			for _, tag := range repoTags {
+				if strings.Contains(strings.ToLower(tag), query) {
+					result := LocalImageResult{
+						ID:       img["Id"].(string),
+						RepoTags: repoTags,
+						Size:     img["Size"].(int64),
+						Created:  img["Created"].(int64),
+					}
+					results = append(results, result)
+					break
+				}
+			}
+		}
+	}
+	
+	return results, nil
+}
+
+// searchDockerHub searches Docker Hub for images
+func searchDockerHub(query string) ([]HubImageResult, error) {
+	output, err := executeDockerCommand("search", "--format", "json", "--limit", "25", query)
+	if err != nil {
+		return nil, err
+	}
+	
+	var results []HubImageResult
+	scanner := bufio.NewScanner(strings.NewReader(string(output)))
+	
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line == "" {
+			continue
+		}
+		
+		var rawResult map[string]interface{}
+		if err := json.Unmarshal([]byte(line), &rawResult); err != nil {
+			continue
+		}
+		
+		result := HubImageResult{
+			Name:        getStringValue(rawResult, "Name"),
+			Description: getStringValue(rawResult, "Description"),
+			Stars:       getIntValue(rawResult, "StarCount"),
+			Official:    getBoolValue(rawResult, "IsOfficial"),
+			Automated:   getBoolValue(rawResult, "IsAutomated"),
+		}
+		
+		results = append(results, result)
+	}
+	
+	return results, nil
+}
+
+// dockerPull pulls an image from registry
+func dockerPull(image string) error {
+	_, err := executeDockerCommand("pull", image)
+	return err
+}
+
+// dockerInspectImage inspects an image
+func dockerInspectImage(imageID string) (map[string]interface{}, error) {
+	output, err := executeDockerCommand("inspect", imageID)
+	if err != nil {
+		return nil, err
+	}
+	
+	var inspection []map[string]interface{}
+	if err := json.Unmarshal(output, &inspection); err != nil {
+		return nil, err
+	}
+	
+	if len(inspection) > 0 {
+		return inspection[0], nil
+	}
+	
+	return map[string]interface{}{}, nil
+}
+
+// SystemMetrics represents real-time system metrics
+type SystemMetrics struct {
+	CPU     CPUMetrics     `json:"cpu"`
+	Memory  MemoryMetrics  `json:"memory"`
+	Disk    DiskMetrics    `json:"disk"`
+	Network NetworkMetrics `json:"network"`
+	Load    LoadMetrics    `json:"load"`
+	Uptime  int64          `json:"uptime"`
+}
+
+type CPUMetrics struct {
+	Usage     float64 `json:"usage"`
+	UserTime  float64 `json:"user_time"`
+	SystemTime float64 `json:"system_time"`
+	IdleTime  float64 `json:"idle_time"`
+	Cores     int     `json:"cores"`
+}
+
+type MemoryMetrics struct {
+	Total     int64   `json:"total"`
+	Used      int64   `json:"used"`
+	Free      int64   `json:"free"`
+	Available int64   `json:"available"`
+	Usage     float64 `json:"usage"`
+	Buffers   int64   `json:"buffers"`
+	Cached    int64   `json:"cached"`
+}
+
+type DiskMetrics struct {
+	Total     int64   `json:"total"`
+	Used      int64   `json:"used"`
+	Free      int64   `json:"free"`
+	Usage     float64 `json:"usage"`
+	ReadOps   int64   `json:"read_ops"`
+	WriteOps  int64   `json:"write_ops"`
+	ReadBytes int64   `json:"read_bytes"`
+	WriteBytes int64  `json:"write_bytes"`
+}
+
+type NetworkMetrics struct {
+	BytesReceived int64 `json:"bytes_received"`
+	BytesSent     int64 `json:"bytes_sent"`
+	PacketsReceived int64 `json:"packets_received"`
+	PacketsSent   int64 `json:"packets_sent"`
+}
+
+type LoadMetrics struct {
+	Load1  float64 `json:"load1"`
+	Load5  float64 `json:"load5"`
+	Load15 float64 `json:"load15"`
+}
+
+// getRealSystemMetrics gets real-time system metrics
+func getRealSystemMetrics() (*SystemMetrics, error) {
+	metrics := &SystemMetrics{}
+	
+	// Get CPU metrics
+	if cpuMetrics, err := getCPUMetrics(); err == nil {
+		metrics.CPU = *cpuMetrics
+	}
+	
+	// Get memory metrics
+	if memMetrics, err := getMemoryMetrics(); err == nil {
+		metrics.Memory = *memMetrics
+	}
+	
+	// Get disk metrics
+	if diskMetrics, err := getDiskMetrics(); err == nil {
+		metrics.Disk = *diskMetrics
+	}
+	
+	// Get network metrics
+	if netMetrics, err := getNetworkMetrics(); err == nil {
+		metrics.Network = *netMetrics
+	}
+	
+	// Get load metrics
+	if loadMetrics, err := getLoadMetrics(); err == nil {
+		metrics.Load = *loadMetrics
+	}
+	
+	// Get uptime
+	if uptime, err := getUptime(); err == nil {
+		metrics.Uptime = uptime
+	}
+	
+	return metrics, nil
+}
+
+// Helper function to get boolean value
+func getBoolValue(data map[string]interface{}, key string) bool {
+	if val, ok := data[key]; ok {
+		if b, ok := val.(bool); ok {
+			return b
+		}
+		if str, ok := val.(string); ok {
+			return strings.ToLower(str) == "true"
+		}
+	}
+	return false
+}

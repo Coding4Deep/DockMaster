@@ -6,6 +6,7 @@ import {
   PhotoIcon,
   CircleStackIcon,
   GlobeAltIcon,
+  ChartBarIcon,
 } from '@heroicons/react/24/outline';
 
 const navigation = [
@@ -14,6 +15,7 @@ const navigation = [
   { name: 'Images', href: '/images', icon: PhotoIcon },
   { name: 'Volumes', href: '/volumes', icon: CircleStackIcon },
   { name: 'Networks', href: '/networks', icon: GlobeAltIcon },
+  { name: 'System Metrics', href: '/metrics', icon: ChartBarIcon },
 ];
 
 const Sidebar = () => {

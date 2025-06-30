@@ -42,6 +42,11 @@ type UserInfo struct {
 	Role     string `json:"role"`
 }
 
+type ChangePasswordRequest struct {
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
+}
+
 type Claims struct {
 	Username string `json:"username"`
 	Role     string `json:"role"`
@@ -77,11 +82,20 @@ func createUser(username, password, role string) error {
 		return err
 	}
 
-	users[username] = User{
+	user := User{
 		Username:     username,
 		PasswordHash: string(hashedPassword),
 		Role:         role,
 		CreatedAt:    time.Now(),
+	}
+
+	users[username] = user
+
+	// Save to database if available
+	if db != nil {
+		if err := saveUserToDB(user); err != nil {
+			logrus.WithError(err).Warn("Failed to save user to database")
+		}
 	}
 
 	return nil
@@ -239,6 +253,57 @@ func meHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+// Change password handler
+func changePasswordHandler(w http.ResponseWriter, r *http.Request) {
+	username := r.Header.Get("X-User")
+	
+	var req ChangePasswordRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Validate current password
+	user, exists := users[username]
+	if !exists {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.CurrentPassword))
+	if err != nil {
+		logrus.WithField("username", username).Warn("Invalid current password for password change")
+		http.Error(w, "Invalid current password", http.StatusUnauthorized)
+		return
+	}
+
+	// Hash new password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		logrus.WithError(err).Error("Failed to hash new password")
+		http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+		return
+	}
+
+	// Update password
+	user.PasswordHash = string(hashedPassword)
+	users[username] = user
+
+	// Update in database if available
+	if db != nil {
+		if err := updateUserPassword(username, string(hashedPassword)); err != nil {
+			logrus.WithError(err).Error("Failed to update password in database")
+			http.Error(w, "Failed to update password in database", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	logrus.WithField("username", username).Info("Password changed successfully")
+	
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "Password changed successfully"})
 }
 
 func getEnvOrDefault(key, defaultValue string) string {

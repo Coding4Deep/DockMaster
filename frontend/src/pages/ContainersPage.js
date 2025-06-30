@@ -5,11 +5,14 @@ import {
   ArrowPathIcon, 
   TrashIcon,
   EyeIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  PlusIcon
 } from '@heroicons/react/24/outline';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import Modal from '../components/common/Modal';
+import RunContainerModal from '../components/containers/RunContainerModal';
 import api from '../services/api';
+import { toast } from 'react-toastify';
 
 const ContainersPage = () => {
   const [containers, setContainers] = useState([]);
@@ -19,6 +22,7 @@ const ContainersPage = () => {
   const [selectedContainer, setSelectedContainer] = useState(null);
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showLogsModal, setShowLogsModal] = useState(false);
+  const [showRunModal, setShowRunModal] = useState(false);
   const [containerStats, setContainerStats] = useState(null);
   const [containerLogs, setContainerLogs] = useState([]);
 
@@ -63,9 +67,10 @@ const ContainersPage = () => {
           return;
       }
       await fetchContainers();
+      toast.success(`Container ${action}ed successfully`);
     } catch (err) {
       console.error(`Failed to ${action} container:`, err);
-      alert(`Failed to ${action} container: ${err.response?.data?.message || err.message}`);
+      toast.error(`Failed to ${action} container: ${err.response?.data?.message || err.message}`);
     }
   };
 
@@ -77,7 +82,7 @@ const ContainersPage = () => {
       setShowStatsModal(true);
     } catch (err) {
       console.error('Failed to fetch container stats:', err);
-      alert('Failed to fetch container stats');
+      toast.error('Failed to fetch container stats');
     }
   };
 
@@ -89,7 +94,7 @@ const ContainersPage = () => {
       setShowLogsModal(true);
     } catch (err) {
       console.error('Failed to fetch container logs:', err);
-      alert('Failed to fetch container logs');
+      toast.error('Failed to fetch container logs');
     }
   };
 
@@ -127,6 +132,13 @@ const ContainersPage = () => {
           </p>
         </div>
         <div className="flex items-center space-x-4">
+          <button
+            onClick={() => setShowRunModal(true)}
+            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center gap-2"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Run Container
+          </button>
           <label className="flex items-center">
             <input
               type="checkbox"
@@ -332,6 +344,13 @@ const ContainersPage = () => {
           )}
         </div>
       </Modal>
+
+      {/* Run Container Modal */}
+      <RunContainerModal
+        isOpen={showRunModal}
+        onClose={() => setShowRunModal(false)}
+        onSuccess={fetchContainers}
+      />
     </div>
   );
 };
