@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: dockmaster-data-pv
+  labels:
+    app: dockmaster
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  hostPath:
+    path: /data/dockmaster
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dockmaster-data-pvc
+  namespace: dockmaster
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-storage

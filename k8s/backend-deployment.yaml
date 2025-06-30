@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dockmaster-backend
+  namespace: dockmaster
+  labels:
+    app: dockmaster-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dockmaster-backend
+  template:
+    metadata:
+      labels:
+        app: dockmaster-backend
+    spec:
+      containers:
+      - name: backend
+        image: dockmaster-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+          name: http
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: dockmaster-config
+              key: BACKEND_PORT
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: dockmaster-config
+              key: LOG_LEVEL
+        - name: DB_PATH
+          valueFrom:
+            configMapKeyRef:
+              name: dockmaster-config
+              key: DB_PATH
+        - name: FRONTEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: dockmaster-config
+              key: FRONTEND_URL
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: dockmaster-secrets
+              key: JWT_SECRET
+        - name: ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dockmaster-secrets
+              key: ADMIN_USERNAME
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dockmaster-secrets
+              key: ADMIN_PASSWORD
+        volumeMounts:
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+        - name: data-volume
+          mountPath: /app/data
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+          type: Socket
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: dockmaster-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dockmaster-backend
+  namespace: dockmaster
+  labels:
+    app: dockmaster-backend
+spec:
+  selector:
+    app: dockmaster-backend
+  ports:
+  - port: 8081
+    targetPort: 8081
+    name: http
+  type: ClusterIP

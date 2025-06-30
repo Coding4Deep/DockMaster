@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dockmaster-frontend
+  namespace: dockmaster
+  labels:
+    app: dockmaster-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dockmaster-frontend
+  template:
+    metadata:
+      labels:
+        app: dockmaster-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: dockmaster-frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: dockmaster-config
+              key: FRONTEND_PORT
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "25m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dockmaster-frontend
+  namespace: dockmaster
+  labels:
+    app: dockmaster-frontend
+spec:
+  selector:
+    app: dockmaster-frontend
+  ports:
+  - port: 3000
+    targetPort: 3000
+    name: http
+  type: ClusterIP
