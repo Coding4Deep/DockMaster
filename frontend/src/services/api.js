@@ -55,6 +55,9 @@ const api = {
   getCurrentUser: () => 
     apiClient.get('/auth/me'),
 
+  changePassword: (currentPassword, newPassword) =>
+    apiClient.post('/auth/change-password', { current_password: currentPassword, new_password: newPassword }),
+
   // System info
   getSystemInfo: () => 
     apiClient.get('/system/info'),
@@ -62,6 +65,9 @@ const api = {
   // Containers
   getContainers: (all = false) => 
     apiClient.get(`/containers?all=${all}`),
+  
+  createContainer: (containerData) =>
+    apiClient.post('/containers', containerData),
   
   startContainer: (id) => 
     apiClient.post(`/containers/${id}/start`),
@@ -85,12 +91,27 @@ const api = {
   getImages: () => 
     apiClient.get('/images'),
   
+  searchImages: (query) =>
+    apiClient.get(`/images/search?q=${encodeURIComponent(query)}`),
+  
+  pullImage: (image, tag = 'latest') =>
+    apiClient.post('/images/pull', { image, tag }),
+  
+  getImageDetails: (id) =>
+    apiClient.get(`/images/${id}/details`),
+  
   deleteImage: (id, force = false) => 
     apiClient.delete(`/images/${id}?force=${force}`),
 
   // Volumes
   getVolumes: () => 
     apiClient.get('/volumes'),
+  
+  createVolume: (volumeData) =>
+    apiClient.post('/volumes', volumeData),
+  
+  inspectVolume: (name) =>
+    apiClient.get(`/volumes/${name}/inspect`),
   
   deleteVolume: (name, force = false) => 
     apiClient.delete(`/volumes/${name}?force=${force}`),
@@ -99,8 +120,18 @@ const api = {
   getNetworks: () => 
     apiClient.get('/networks'),
   
+  createNetwork: (networkData) =>
+    apiClient.post('/networks', networkData),
+  
+  inspectNetwork: (id) =>
+    apiClient.get(`/networks/${id}/inspect`),
+  
   deleteNetwork: (id) => 
     apiClient.delete(`/networks/${id}`),
+
+  // Logs
+  getLogs: (service = '', limit = 100) =>
+    apiClient.get(`/logs?service=${service}&limit=${limit}`),
 
   // Health check
   healthCheck: () => 

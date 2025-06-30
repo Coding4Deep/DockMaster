@@ -11,17 +11,91 @@ services:
     environment:
       - REACT_APP_API_URL=http://localhost:8080
     depends_on:
-      - docker-service
+      - api-gateway
     networks:
       - dockmaster-network
 
-  # Docker Service (Unified Backend)
-  docker-service:
+  # API Gateway
+  api-gateway:
     build:
-      context: ./backend/docker-service
+      context: ./backend/services/api-gateway
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    environment:
+      - JWT_SECRET=dockmaster-super-secret-key-2024
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - auth-service
+      - container-service
+      - image-service
+      - volume-service
+      - network-service
+    networks:
+      - dockmaster-network
+    restart: unless-stopped
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ./backend/services/auth-service
+      dockerfile: Dockerfile
+    environment:
+      - LOG_LEVEL=info
+      - JWT_SECRET=dockmaster-super-secret-key-2024
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin123
+    volumes:
+      - ./data:/root/data
+    networks:
+      - dockmaster-network
+    restart: unless-stopped
+
+  # Container Service
+  container-service:
+    build:
+      context: ./backend/services/container-service
+      dockerfile: Dockerfile
+    environment:
+      - LOG_LEVEL=info
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - dockmaster-network
+    restart: unless-stopped
+
+  # Image Service
+  image-service:
+    build:
+      context: ./backend/services/image-service
+      dockerfile: Dockerfile
+    environment:
+      - LOG_LEVEL=info
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - dockmaster-network
+    restart: unless-stopped
+
+  # Volume Service
+  volume-service:
+    build:
+      context: ./backend/services/volume-service
+      dockerfile: Dockerfile
+    environment:
+      - LOG_LEVEL=info
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - dockmaster-network
+    restart: unless-stopped
+
+  # Network Service
+  network-service:
+    build:
+      context: ./backend/services/network-service
+      dockerfile: Dockerfile
     environment:
       - LOG_LEVEL=info
     volumes:
@@ -33,3 +107,7 @@ services:
 networks:
   dockmaster-network:
     driver: bridge
+
+volumes:
+  dockmaster-data:
+    driver: local

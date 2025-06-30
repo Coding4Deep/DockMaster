@@ -1,0 +1,55 @@
+# Docker volumes and data
+volumes/
+data/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+
+# Logs
+logs/
+*.log
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build artifacts
+dist/
+build/
+
+# Test files
+test-*.html
+
+# Docker Compose override files
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Backup files
+*.backup
+*.bak
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock

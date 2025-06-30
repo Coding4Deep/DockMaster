@@ -1,0 +1,1144 @@
+[
+  {
+    "id": 1,
+    "level": "info",
+    "message": "Default admin user created",
+    "service": "auth-service",
+    "data": {
+      "password": "admin123",
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:26:46.889491213Z"
+  },
+  {
+    "id": 2,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:27:54.628774536Z"
+  },
+  {
+    "id": 3,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:28:06.493235939Z"
+  },
+  {
+    "id": 4,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:28:25.738144784Z"
+  },
+  {
+    "id": 5,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:28:44.66709502Z"
+  },
+  {
+    "id": 6,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:30:28.840749569Z"
+  },
+  {
+    "id": 7,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:31:40.033561798Z"
+  },
+  {
+    "id": 8,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:32:53.405318808Z"
+  },
+  {
+    "id": 9,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:33:08.838224993Z"
+  },
+  {
+    "id": 10,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:33:11.563588968Z"
+  },
+  {
+    "id": 11,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:33:12.292046788Z"
+  },
+  {
+    "id": 12,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:33:12.830859464Z"
+  },
+  {
+    "id": 13,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:33:13.174707346Z"
+  },
+  {
+    "id": 14,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:33:13.601370559Z"
+  },
+  {
+    "id": 15,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:33:14.026664188Z"
+  },
+  {
+    "id": 16,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:33:14.446658276Z"
+  },
+  {
+    "id": 17,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:33:16.142138675Z"
+  },
+  {
+    "id": 18,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:33:16.609983084Z"
+  },
+  {
+    "id": 19,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:34:23.246584007Z"
+  },
+  {
+    "id": 20,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:34:39.189119726Z"
+  },
+  {
+    "id": 21,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:37:38.553919662Z"
+  },
+  {
+    "id": 22,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:35.770593802Z"
+  },
+  {
+    "id": 23,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:36.557803171Z"
+  },
+  {
+    "id": 24,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:38.581342598Z"
+  },
+  {
+    "id": 25,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:40.007463271Z"
+  },
+  {
+    "id": 26,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:40.599290039Z"
+  },
+  {
+    "id": 27,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:41.054749887Z"
+  },
+  {
+    "id": 28,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:41.23632056Z"
+  },
+  {
+    "id": 29,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:41.524313Z"
+  },
+  {
+    "id": 30,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:42.088083102Z"
+  },
+  {
+    "id": 31,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:42.288607672Z"
+  },
+  {
+    "id": 32,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:42.580434458Z"
+  },
+  {
+    "id": 33,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:39:42.866571087Z"
+  },
+  {
+    "id": 34,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:42:37.103711519Z"
+  },
+  {
+    "id": 35,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:42:51.611800953Z"
+  },
+  {
+    "id": 36,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:45:25.515667601Z"
+  },
+  {
+    "id": 37,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:47:41.394838423Z"
+  },
+  {
+    "id": 38,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:48:16.96120465Z"
+  },
+  {
+    "id": 39,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:48:25.003332715Z"
+  },
+  {
+    "id": 40,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:48:27.424957776Z"
+  },
+  {
+    "id": 41,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:48:28.247010601Z"
+  },
+  {
+    "id": 42,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:48:40.378811693Z"
+  },
+  {
+    "id": 43,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:48:52.498420329Z"
+  },
+  {
+    "id": 44,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:49:19.738910777Z"
+  },
+  {
+    "id": 45,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:53:55.165434203Z"
+  },
+  {
+    "id": 46,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:54:38.927256323Z"
+  },
+  {
+    "id": 47,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:56:33.671385563Z"
+  },
+  {
+    "id": 48,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:56:34.76280194Z"
+  },
+  {
+    "id": 49,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:56:51.46999921Z"
+  },
+  {
+    "id": 50,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:56:59.536570863Z"
+  },
+  {
+    "id": 51,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:57:06.574896013Z"
+  },
+  {
+    "id": 52,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:57:17.24127945Z"
+  },
+  {
+    "id": 53,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:57:25.99226649Z"
+  },
+  {
+    "id": 54,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:57:40.030725545Z"
+  },
+  {
+    "id": 55,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:57:45.861504652Z"
+  },
+  {
+    "id": 56,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:58:01.934173567Z"
+  },
+  {
+    "id": 57,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:58:46.794687763Z"
+  },
+  {
+    "id": 58,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:59:00.80419753Z"
+  },
+  {
+    "id": 59,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T08:59:07.60293448Z"
+  },
+  {
+    "id": 60,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:00:08.938178728Z"
+  },
+  {
+    "id": 61,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:01:44.89044447Z"
+  },
+  {
+    "id": 62,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:01:52.011028517Z"
+  },
+  {
+    "id": 63,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:02:03.265641738Z"
+  },
+  {
+    "id": 64,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:04:07.053688703Z"
+  },
+  {
+    "id": 65,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:04:13.78691756Z"
+  },
+  {
+    "id": 66,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:04:46.78519171Z"
+  },
+  {
+    "id": 67,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:07:28.181224595Z"
+  },
+  {
+    "id": 68,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:07:47.833250821Z"
+  },
+  {
+    "id": 69,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:11:07.693091917Z"
+  },
+  {
+    "id": 70,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:12:40.913986335Z"
+  },
+  {
+    "id": 71,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:14:27.283680729Z"
+  },
+  {
+    "id": 72,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:14:36.841017498Z"
+  },
+  {
+    "id": 73,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:14:57.617773419Z"
+  },
+  {
+    "id": 74,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:15:05.758267769Z"
+  },
+  {
+    "id": 75,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:18:48.135192533Z"
+  },
+  {
+    "id": 76,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:18:57.04080641Z"
+  },
+  {
+    "id": 77,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:19:09.20296146Z"
+  },
+  {
+    "id": 78,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:19:30.995119247Z"
+  },
+  {
+    "id": 79,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:20:05.901886954Z"
+  },
+  {
+    "id": 80,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:25:04.326325655Z"
+  },
+  {
+    "id": 81,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:25:05.437405989Z"
+  },
+  {
+    "id": 82,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:05.951787832Z"
+  },
+  {
+    "id": 83,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:10.727540061Z"
+  },
+  {
+    "id": 84,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:11.584734045Z"
+  },
+  {
+    "id": 85,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:11.794611188Z"
+  },
+  {
+    "id": 86,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:12.156951168Z"
+  },
+  {
+    "id": 87,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:12.610782753Z"
+  },
+  {
+    "id": 88,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:12.800945119Z"
+  },
+  {
+    "id": 89,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:12.987303458Z"
+  },
+  {
+    "id": 90,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:13.322567323Z"
+  },
+  {
+    "id": 91,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:13.84890006Z"
+  },
+  {
+    "id": 92,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:14.502085888Z"
+  },
+  {
+    "id": 93,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:28:14.764855088Z"
+  },
+  {
+    "id": 94,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:34:13.088022916Z"
+  },
+  {
+    "id": 95,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:40:19.916448032Z"
+  },
+  {
+    "id": 96,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:40:21.416097616Z"
+  },
+  {
+    "id": 97,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:40:22.005424756Z"
+  },
+  {
+    "id": 98,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:40:22.34054042Z"
+  },
+  {
+    "id": 99,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:40:22.546171035Z"
+  },
+  {
+    "id": 100,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:40:22.953891372Z"
+  },
+  {
+    "id": 101,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:40:25.239153974Z"
+  },
+  {
+    "id": 102,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:40:25.610070359Z"
+  },
+  {
+    "id": 103,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:40:25.914545888Z"
+  },
+  {
+    "id": 104,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:42:12.218301333Z"
+  },
+  {
+    "id": 105,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:42:21.354939293Z"
+  },
+  {
+    "id": 106,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:43:57.357530457Z"
+  },
+  {
+    "id": 107,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:45:00.069160722Z"
+  },
+  {
+    "id": 108,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:45:01.007864888Z"
+  },
+  {
+    "id": 109,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:48:05.002789798Z"
+  },
+  {
+    "id": 110,
+    "level": "warn",
+    "message": "Failed login attempt",
+    "service": "auth-service",
+    "data": {
+      "error": "invalid password",
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:49:16.070960443Z"
+  },
+  {
+    "id": 111,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:49:24.901729967Z"
+  },
+  {
+    "id": 112,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:50:09.073948029Z"
+  },
+  {
+    "id": 113,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:50:13.081575226Z"
+  },
+  {
+    "id": 114,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:50:13.784141041Z"
+  }
+]

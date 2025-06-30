@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Connectivity Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; }
+        .error { background-color: #f8d7da; }
+        .info { background-color: #d1ecf1; }
+    </style>
+</head>
+<body>
+    <h1>DockMaster Network Connectivity Test</h1>
+    <div id="results"></div>
+
+    <script>
+        const results = document.getElementById('results');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            results.appendChild(div);
+        }
+
+        async function testConnectivity() {
+            addResult('Starting network connectivity tests...', 'info');
+            
+            // Test 1: Current location info
+            addResult(`Current URL: ${window.location.href}`, 'info');
+            addResult(`Current Origin: ${window.location.origin}`, 'info');
+            addResult(`Current Host: ${window.location.host}`, 'info');
+            
+            // Test 2: Try different API URLs
+            const apiUrls = [
+                'http://localhost:8080',
+                `http://${window.location.hostname}:8080`,
+                'http://127.0.0.1:8080'
+            ];
+            
+            for (const apiUrl of apiUrls) {
+                try {
+                    addResult(`Testing API URL: ${apiUrl}`, 'info');
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000);
+                    
+                    const response = await fetch(`${apiUrl}/health`, {
+                        signal: controller.signal,
+                        mode: 'cors'
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        addResult(`✅ ${apiUrl} - SUCCESS: ${JSON.stringify(data)}`, 'success');
+                        
+                        // Test login on successful health check
+                        try {
+                            const loginResponse = await fetch(`${apiUrl}/auth/login`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ username: 'admin', password: 'admin123' })
+                            });
+                            
+                            if (loginResponse.ok) {
+                                const loginData = await loginResponse.json();
+                                addResult(`✅ ${apiUrl} - LOGIN SUCCESS: User ${loginData.user.username}`, 'success');
+                            } else {
+                                addResult(`❌ ${apiUrl} - LOGIN FAILED: ${loginResponse.status} ${loginResponse.statusText}`, 'error');
+                            }
+                        } catch (loginError) {
+                            addResult(`❌ ${apiUrl} - LOGIN ERROR: ${loginError.message}`, 'error');
+                        }
+                    } else {
+                        addResult(`❌ ${apiUrl} - HTTP ERROR: ${response.status} ${response.statusText}`, 'error');
+                    }
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        addResult(`❌ ${apiUrl} - TIMEOUT (5s)`, 'error');
+                    } else {
+                        addResult(`❌ ${apiUrl} - ERROR: ${error.message}`, 'error');
+                    }
+                }
+            }
+            
+            addResult('Network connectivity tests completed.', 'info');
+        }
+
+        // Run tests on page load
+        window.onload = testConnectivity;
+    </script>
+</body>
+</html>

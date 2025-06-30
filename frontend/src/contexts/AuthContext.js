@@ -26,11 +26,19 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const fetchUser = async () => {
+    console.log('AuthContext: fetchUser called');
     try {
+      console.log('AuthContext: Making API call to getCurrentUser...');
       const response = await api.getCurrentUser();
+      console.log('AuthContext: getCurrentUser response:', response.data);
       setUser(response.data);
     } catch (error) {
-      console.error('Failed to fetch user:', error);
+      console.error('AuthContext: Failed to fetch user:', error);
+      console.error('AuthContext: fetchUser error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
       logout();
     } finally {
       setLoading(false);
@@ -38,8 +46,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (username, password) => {
+    console.log('AuthContext: login called with username:', username);
     try {
+      console.log('AuthContext: Making API call to login...');
       const response = await api.login(username, password);
+      console.log('AuthContext: login response:', response.data);
       const { token: newToken, user: userData } = response.data;
       
       localStorage.setItem('token', newToken);
@@ -47,12 +58,19 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       api.setAuthToken(newToken);
       
+      console.log('AuthContext: login successful');
       return { success: true };
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('AuthContext: Login failed:', error);
+      console.error('AuthContext: Login error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        config: error.config
+      });
       return { 
         success: false, 
-        error: error.response?.data?.message || 'Login failed' 
+        error: error.response?.data?.message || error.message || 'Login failed' 
       };
     }
   };
@@ -72,10 +90,24 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const changePassword = async (currentPassword, newPassword) => {
+    try {
+      await api.changePassword(currentPassword, newPassword);
+      return { success: true };
+    } catch (error) {
+      console.error('Change password failed:', error);
+      return { 
+        success: false, 
+        error: error.response?.data?.message || 'Failed to change password' 
+      };
+    }
+  };
+
   const value = {
     user,
     login,
     logout,
+    changePassword,
     loading,
     isAuthenticated: !!user,
   };

@@ -1,53 +1,88 @@
 # 🐳 DockMaster - Docker Management Dashboard
 
-A modern, responsive web-based Docker management interface built with React and Go. DockMaster provides an intuitive dashboard to monitor and manage your Docker containers, images, volumes, and networks.
+A modern, responsive web-based Docker management interface built with React and Go microservices. DockMaster provides an intuitive dashboard to monitor and manage your Docker containers, images, volumes, and networks with enhanced security and scalability.
 
-![DockMaster Dashboard](https://img.shields.io/badge/Status-Live-brightgreen) ![Docker](https://img.shields.io/badge/Docker-Ready-blue) ![React](https://img.shields.io/badge/React-18-61dafb) ![Go](https://img.shields.io/badge/Go-1.23-00add8)
+![DockMaster Dashboard](https://img.shields.io/badge/Status-Live-brightgreen) ![Docker](https://img.shields.io/badge/Docker-Ready-blue) ![React](https://img.shields.io/badge/React-18-61dafb) ![Go](https://img.shields.io/badge/Go-1.21-00add8) ![Microservices](https://img.shields.io/badge/Architecture-Microservices-orange)
 
 ## ✨ Features
 
 ### 🚀 Container Management
 - **Real-time Container Monitoring** - View all containers with live status updates
+- **Container Creation** - Create containers from UI with port mapping, volumes, and environment variables
 - **Container Operations** - Start, stop, restart, and delete containers with one click
 - **Resource Monitoring** - CPU, memory, network, and disk I/O statistics
 - **Log Viewing** - Stream and view container logs in real-time
 - **Container Details** - Comprehensive information about each container
 
 ### 🖼️ Image Management
-- **Image Repository** - Browse and manage Docker images
+- **Local Image Repository** - Browse and manage Docker images
+- **Docker Hub Integration** - Search and pull images directly from Docker Hub
+- **Image Details** - View comprehensive image information before pulling
 - **Image Operations** - Pull, delete, and inspect images
 - **Size Optimization** - View image sizes and optimize storage
 - **Tag Management** - Handle multiple image tags efficiently
 
 ### 💾 Volume Management
 - **Volume Overview** - Monitor all Docker volumes and their usage
+- **Volume Creation** - Create volumes with custom drivers and options
 - **Storage Analytics** - Track volume sizes and reference counts
-- **Volume Operations** - Create, delete, and manage volumes
+- **Volume Operations** - Create, delete, and manage volumes safely
+- **Usage Protection** - Prevents deletion of volumes in use by containers
 - **Mount Point Information** - View detailed mount point data
 
 ### 🌐 Network Management
 - **Network Topology** - Visualize Docker networks and connections
+- **Network Creation** - Create custom networks with IPAM configuration
 - **Network Operations** - Create, delete, and configure networks
 - **Container Connectivity** - View which containers are connected to each network
 - **Network Drivers** - Support for bridge, host, and custom networks
+
+### 🔐 Security & Authentication
+- **JWT Authentication** - Secure token-based authentication
+- **Password Management** - Change default passwords on first login
+- **Role-based Access** - Admin and user role management
+- **Session Management** - Secure session handling and logout
+- **Database Logging** - All actions logged to SQLite database
 
 ### 📊 Dashboard & Analytics
 - **System Overview** - Real-time system resource usage
 - **Performance Metrics** - Historical data and trends
 - **Health Monitoring** - Service health checks and alerts
+- **Audit Logs** - Complete audit trail of all operations
 - **Responsive Design** - Works perfectly on desktop, tablet, and mobile
 
 ## 🏗️ Architecture
 
-DockMaster follows a modern microservices architecture:
+DockMaster follows a modern microservices architecture with dedicated services for each domain:
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Docker API     │    │   Docker        │
-│   (React)       │◄──►│   Service (Go)   │◄──►│   Engine        │
-│   Port: 3000    │    │   Port: 8080     │    │   Socket        │
+│   Frontend      │    │   API Gateway    │    │   Auth Service  │
+│   (React)       │◄──►│   Port: 8080     │◄──►│   Port: 8081    │
+│   Port: 3000    │    └──────────────────┘    └─────────────────┘
+└─────────────────┘              │
+                                 ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│ Container Svc   │    │   Image Service  │    │  Volume Service │
+│   Port: 8082    │    │   Port: 8083     │    │   Port: 8084    │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│ Network Service │    │   Docker Engine  │    │   SQLite DB     │
+│   Port: 8085    │    │   (Socket)       │    │   (Data)        │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
+
+### Service Architecture
+- **API Gateway** (Port 8080) - Routes requests to appropriate microservices
+- **Auth Service** (Port 8081) - Handles authentication, authorization, and logging
+- **Container Service** (Port 8082) - Manages Docker containers
+- **Image Service** (Port 8083) - Handles Docker images and Docker Hub integration
+- **Volume Service** (Port 8084) - Manages Docker volumes
+- **Network Service** (Port 8085) - Handles Docker networks
+- **Frontend** (Port 3000) - React-based user interface
+- **Database** - SQLite for user management and audit logging
 
 ### Frontend (React)
 - **Framework**: React 18 with modern hooks

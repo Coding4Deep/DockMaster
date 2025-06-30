@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DockMaster API Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button { padding: 10px 15px; margin: 5px; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>DockMaster API Debug Tool</h1>
+    
+    <div class="test-section">
+        <h3>1. Health Check</h3>
+        <button onclick="testHealth()">Test Health Endpoint</button>
+        <div id="health-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. Login Test</h3>
+        <button onclick="testLogin()">Test Login (admin/admin123)</button>
+        <div id="login-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. CORS Preflight Test</h3>
+        <button onclick="testCORS()">Test CORS Preflight</button>
+        <div id="cors-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>4. Network Connectivity</h3>
+        <button onclick="testConnectivity()">Test Basic Connectivity</button>
+        <div id="connectivity-result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080';
+        
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            element.innerHTML += `<div class="${className}">${new Date().toLocaleTimeString()}: ${message}</div>`;
+        }
+
+        function logObject(elementId, obj, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            element.innerHTML += `<pre class="${className}">${JSON.stringify(obj, null, 2)}</pre>`;
+        }
+
+        async function testHealth() {
+            const resultId = 'health-result';
+            document.getElementById(resultId).innerHTML = '';
+            log(resultId, 'Testing health endpoint...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                log(resultId, `Status: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                
+                const data = await response.json();
+                logObject(resultId, data, 'success');
+            } catch (error) {
+                log(resultId, `Error: ${error.message}`, 'error');
+                logObject(resultId, error, 'error');
+            }
+        }
+
+        async function testLogin() {
+            const resultId = 'login-result';
+            document.getElementById(resultId).innerHTML = '';
+            log(resultId, 'Testing login endpoint...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'admin123'
+                    })
+                });
+                
+                log(resultId, `Status: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                
+                const data = await response.json();
+                logObject(resultId, data, response.ok ? 'success' : 'error');
+                
+                if (response.ok && data.token) {
+                    log(resultId, 'Login successful! Testing /auth/me endpoint...', 'success');
+                    
+                    const meResponse = await fetch(`${API_BASE}/auth/me`, {
+                        headers: {
+                            'Authorization': `Bearer ${data.token}`
+                        }
+                    });
+                    
+                    log(resultId, `/auth/me Status: ${meResponse.status} ${meResponse.statusText}`, meResponse.ok ? 'success' : 'error');
+                    
+                    const meData = await meResponse.json();
+                    logObject(resultId, meData, meResponse.ok ? 'success' : 'error');
+                }
+            } catch (error) {
+                log(resultId, `Error: ${error.message}`, 'error');
+                logObject(resultId, error, 'error');
+            }
+        }
+
+        async function testCORS() {
+            const resultId = 'cors-result';
+            document.getElementById(resultId).innerHTML = '';
+            log(resultId, 'Testing CORS preflight...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                log(resultId, `Preflight Status: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                
+                const headers = {};
+                for (let [key, value] of response.headers.entries()) {
+                    if (key.toLowerCase().startsWith('access-control')) {
+                        headers[key] = value;
+                    }
+                }
+                
+                logObject(resultId, { 'CORS Headers': headers }, 'info');
+            } catch (error) {
+                log(resultId, `Error: ${error.message}`, 'error');
+                logObject(resultId, error, 'error');
+            }
+        }
+
+        async function testConnectivity() {
+            const resultId = 'connectivity-result';
+            document.getElementById(resultId).innerHTML = '';
+            log(resultId, 'Testing basic connectivity...');
+            
+            // Test if we can reach the API at all
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch(`${API_BASE}/health`, {
+                    signal: controller.signal,
+                    mode: 'cors'
+                });
+                
+                clearTimeout(timeoutId);
+                log(resultId, `Connection successful: ${response.status}`, 'success');
+                
+                // Test different origins
+                log(resultId, `Current origin: ${window.location.origin}`, 'info');
+                log(resultId, `API URL: ${API_BASE}`, 'info');
+                
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    log(resultId, 'Connection timeout (5s)', 'error');
+                } else {
+                    log(resultId, `Connection error: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        // Auto-run basic tests on page load
+        window.onload = function() {
+            log('connectivity-result', 'Page loaded, running basic connectivity test...');
+            testConnectivity();
+        };
+    </script>
+</body>
+</html>

@@ -14,26 +14,21 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var (
-	jwtSecret []byte
-	users     = make(map[string]User)
-)
-
-type User struct {
-	Username     string `json:"username"`
-	PasswordHash string `json:"password_hash"`
-	Role         string `json:"role"`
-	CreatedAt    time.Time `json:"created_at"`
-}
+var jwtSecret []byte
 
 type LoginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
+type ChangePasswordRequest struct {
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
+}
+
 type LoginResponse struct {
-	Token     string `json:"token"`
-	ExpiresAt int64  `json:"expires_at"`
+	Token     string   `json:"token"`
+	ExpiresAt int64    `json:"expires_at"`
 	User      UserInfo `json:"user"`
 }
 
@@ -61,9 +56,24 @@ func initAuth() {
 	// Create default admin user if no users exist
 	adminUsername := getEnvOrDefault("ADMIN_USERNAME", "admin")
 	adminPassword := getEnvOrDefault("ADMIN_PASSWORD", "admin123")
-	
-	if len(users) == 0 {
-		createUser(adminUsername, adminPassword, "admin")
+
+	// Check if admin user exists
+	if _, err := Storage.GetUser(adminUsername); err != nil {
+		// User doesn't exist, create it
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(adminPassword), bcrypt.DefaultCost)
+		if err != nil {
+			logrus.WithError(err).Fatal("Failed to hash admin password")
+		}
+
+		if err := Storage.CreateUser(adminUsername, string(hashedPassword), "admin"); err != nil {
+			logrus.WithError(err).Fatal("Failed to create admin user")
+		}
+
+		Storage.LogEntry("info", "Default admin user created", "auth-service", map[string]string{
+			"username": adminUsername,
+			"password": adminPassword,
+		})
+
 		logrus.WithFields(logrus.Fields{
 			"username": adminUsername,
 			"password": adminPassword,
@@ -71,34 +81,18 @@ func initAuth() {
 	}
 }
 
-func createUser(username, password, role string) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
-	}
-
-	users[username] = User{
-		Username:     username,
-		PasswordHash: string(hashedPassword),
-		Role:         role,
-		CreatedAt:    time.Now(),
-	}
-
-	return nil
-}
-
 func authenticateUser(username, password string) (*User, error) {
-	user, exists := users[username]
-	if !exists {
+	user, err := Storage.GetUser(username)
+	if err != nil {
 		return nil, fmt.Errorf("user not found")
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 	if err != nil {
 		return nil, fmt.Errorf("invalid password")
 	}
 
-	return &user, nil
+	return user, nil
 }
 
 func generateToken(user *User) (string, int64, error) {
@@ -145,12 +139,6 @@ func validateToken(tokenString string) (*Claims, error) {
 // Middleware for authentication
 func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Skip auth for login and health endpoints
-		if r.URL.Path == "/auth/login" || r.URL.Path == "/health" {
-			next(w, r)
-			return
-		}
-
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
 			http.Error(w, "Authorization header required", http.StatusUnauthorized)
@@ -188,10 +176,10 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	user, err := authenticateUser(req.Username, req.Password)
 	if err != nil {
-		logrus.WithFields(logrus.Fields{
+		Storage.LogEntry("warn", "Failed login attempt", "auth-service", map[string]string{
 			"username": req.Username,
 			"error":    err.Error(),
-		}).Warn("Failed login attempt")
+		})
 		http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		return
 	}
@@ -203,7 +191,9 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logrus.WithField("username", user.Username).Info("User logged in successfully")
+	Storage.LogEntry("info", "User logged in successfully", "auth-service", map[string]string{
+		"username": user.Username,
+	})
 
 	response := LoginResponse{
 		Token:     token,
@@ -218,11 +208,13 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-// Logout handler (client-side token removal)
+// Logout handler
 func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.Header.Get("X-User")
-	logrus.WithField("username", username).Info("User logged out")
-	
+	Storage.LogEntry("info", "User logged out", "auth-service", map[string]string{
+		"username": username,
+	})
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"message": "Logged out successfully"})
 }
@@ -239,6 +231,77 @@ func meHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+// Change password handler
+func changePasswordHandler(w http.ResponseWriter, r *http.Request) {
+	username := r.Header.Get("X-User")
+
+	var req ChangePasswordRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Verify current password
+	user, err := Storage.GetUser(username)
+	if err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.CurrentPassword)); err != nil {
+		Storage.LogEntry("warn", "Failed password change attempt", "auth-service", map[string]string{
+			"username": username,
+			"reason":   "invalid current password",
+		})
+		http.Error(w, "Current password is incorrect", http.StatusBadRequest)
+		return
+	}
+
+	// Hash new password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+		return
+	}
+
+	// Update password in database
+	if err := Storage.UpdateUserPassword(username, string(hashedPassword)); err != nil {
+		logrus.WithError(err).Error("Failed to update password")
+		http.Error(w, "Failed to update password", http.StatusInternalServerError)
+		return
+	}
+
+	Storage.LogEntry("info", "Password changed successfully", "auth-service", map[string]string{
+		"username": username,
+	})
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "Password changed successfully"})
+}
+
+// Get logs handler
+func getLogsHandler(w http.ResponseWriter, r *http.Request) {
+	// Only admin can view logs
+	role := r.Header.Get("X-Role")
+	if role != "admin" {
+		http.Error(w, "Insufficient permissions", http.StatusForbidden)
+		return
+	}
+
+	service := r.URL.Query().Get("service")
+	limit := 100 // Default limit
+
+	logs, err := Storage.GetLogs(limit, service)
+	if err != nil {
+		logrus.WithError(err).Error("Failed to get logs")
+		http.Error(w, "Failed to get logs", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(logs)
 }
 
 func getEnvOrDefault(key, defaultValue string) string {
