@@ -1,0 +1,11 @@
+bin/
+build/
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+vendor/
+.env
+coverage.out
+.DS_Store

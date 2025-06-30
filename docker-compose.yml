@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+    depends_on:
+      - docker-service
+    networks:
+      - dockmaster-network
+
+  # Docker Service (Unified Backend)
+  docker-service:
+    build:
+      context: ./backend/docker-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - LOG_LEVEL=info
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - dockmaster-network
+    restart: unless-stopped
+
+networks:
+  dockmaster-network:
+    driver: bridge
