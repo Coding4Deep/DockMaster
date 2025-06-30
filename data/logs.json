@@ -1140,5 +1140,115 @@
       "username": "admin"
     },
     "created_at": "2025-06-30T09:50:13.784141041Z"
+  },
+  {
+    "id": 115,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:52:55.7762607Z"
+  },
+  {
+    "id": 116,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:53:27.124089784Z"
+  },
+  {
+    "id": 117,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:54:26.423012529Z"
+  },
+  {
+    "id": 118,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:54:55.115646505Z"
+  },
+  {
+    "id": 119,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T09:55:19.498135934Z"
+  },
+  {
+    "id": 120,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T10:02:30.953939564Z"
+  },
+  {
+    "id": 121,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T10:06:47.668664174Z"
+  },
+  {
+    "id": 122,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T10:07:41.063811416Z"
+  },
+  {
+    "id": 123,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T10:13:22.725529202Z"
+  },
+  {
+    "id": 124,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T10:14:10.027479933Z"
+  },
+  {
+    "id": 125,
+    "level": "info",
+    "message": "User logged in successfully",
+    "service": "auth-service",
+    "data": {
+      "username": "admin"
+    },
+    "created_at": "2025-06-30T10:15:14.158466207Z"
   }
 ]

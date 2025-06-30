@@ -59,28 +59,28 @@ const DashboardPage = () => {
   const stats = [
     {
       name: 'Total Containers',
-      value: systemInfo?.containers?.total || 0,
+      value: systemInfo?.Containers || 0,
       icon: CubeIcon,
       color: 'bg-blue-500',
-      details: `${systemInfo?.containers?.running || 0} running, ${systemInfo?.containers?.stopped || 0} stopped`
+      details: `${systemInfo?.ContainersRunning || 0} running, ${systemInfo?.ContainersStopped || 0} stopped`
     },
     {
       name: 'Images',
-      value: systemInfo?.images || 0,
+      value: systemInfo?.Images || 0,
       icon: PhotoIcon,
       color: 'bg-green-500',
       details: 'Docker images'
     },
     {
       name: 'CPU Cores',
-      value: systemInfo?.system?.cpus || 0,
+      value: systemInfo?.NCPU || 0,
       icon: CpuChipIcon,
       color: 'bg-purple-500',
-      details: systemInfo?.system?.architecture || 'Unknown'
+      details: systemInfo?.Architecture || 'Unknown'
     },
     {
       name: 'Memory',
-      value: systemInfo?.system?.totalMemory ? `${Math.round(systemInfo.system.totalMemory / 1024 / 1024 / 1024)}GB` : 'N/A',
+      value: systemInfo?.MemTotal ? `${Math.round(systemInfo.MemTotal / 1024 / 1024 / 1024)}GB` : 'N/A',
       icon: ComputerDesktopIcon,
       color: 'bg-yellow-500',
       details: 'Total system memory'
@@ -152,19 +152,19 @@ const DashboardPage = () => {
               <div className="flex justify-between">
                 <span className="text-sm text-gray-500 dark:text-gray-400">Version:</span>
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {systemInfo?.version?.version || 'N/A'}
+                  {systemInfo?.ServerVersion || 'N/A'}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500 dark:text-gray-400">API Version:</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">Architecture:</span>
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {systemInfo?.version?.apiVersion || 'N/A'}
+                  {systemInfo?.Architecture || 'N/A'}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500 dark:text-gray-400">Go Version:</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">OS Type:</span>
                 <span className="text-sm font-medium text-gray-900 dark:text-white">
-                  {systemInfo?.version?.goVersion || 'N/A'}
+                  {systemInfo?.OSType || 'N/A'}
                 </span>
               </div>
             </div>
@@ -181,25 +181,25 @@ const DashboardPage = () => {
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500 dark:text-gray-400">Running:</span>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                  {systemInfo?.containers?.running || 0}
+                  {systemInfo?.ContainersRunning || 0}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500 dark:text-gray-400">Paused:</span>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                  {systemInfo?.containers?.paused || 0}
+                  {systemInfo?.ContainersPaused || 0}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500 dark:text-gray-400">Stopped:</span>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-                  {systemInfo?.containers?.stopped || 0}
+                  {systemInfo?.ContainersStopped || 0}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-500 dark:text-gray-400">Total:</span>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                  {systemInfo?.containers?.total || 0}
+                  {systemInfo?.Containers || 0}
                 </span>
               </div>
             </div>
@@ -217,19 +217,19 @@ const DashboardPage = () => {
             <div>
               <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Operating System</dt>
               <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                {systemInfo?.system?.osType || 'Unknown'}
+                {systemInfo?.OperatingSystem || 'Unknown'}
               </dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Architecture</dt>
               <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                {systemInfo?.system?.architecture || 'Unknown'}
+                {systemInfo?.Architecture || 'Unknown'}
               </dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">CPU Cores</dt>
               <dd className="mt-1 text-sm text-gray-900 dark:text-white">
-                {systemInfo?.system?.cpus || 'Unknown'}
+                {systemInfo?.NCPU || 'Unknown'}
               </dd>
             </div>
           </div>

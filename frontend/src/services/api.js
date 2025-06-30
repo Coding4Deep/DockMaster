@@ -59,12 +59,28 @@ const api = {
     apiClient.post('/auth/change-password', { current_password: currentPassword, new_password: newPassword }),
 
   // System info
-  getSystemInfo: () => 
-    apiClient.get('/system/info'),
+  getSystemInfo: () => {
+    console.log('API: Making getSystemInfo request...');
+    return apiClient.get('/system/info').then(response => {
+      console.log('API: getSystemInfo response:', response.data);
+      return response;
+    }).catch(error => {
+      console.error('API: getSystemInfo error:', error);
+      throw error;
+    });
+  },
 
   // Containers
-  getContainers: (all = false) => 
-    apiClient.get(`/containers?all=${all}`),
+  getContainers: (all = false) => {
+    console.log('API: Making getContainers request with all =', all);
+    return apiClient.get(`/containers?all=${all}`).then(response => {
+      console.log('API: getContainers response:', response.data?.length || 0, 'containers');
+      return response;
+    }).catch(error => {
+      console.error('API: getContainers error:', error);
+      throw error;
+    });
+  },
   
   createContainer: (containerData) =>
     apiClient.post('/containers', containerData),
